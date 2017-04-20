@@ -8,20 +8,14 @@ html.no-js(lang='')
     link(rel='apple-touch-icon', href='apple-touch-icon.png')
     // Place favicon.ico in the root directory
 
-    // build:css styles/vendor.css
+    // build:css /xwingcodex/styles/vendor.css
     // bower:css
+    link(rel='stylesheet', href='bower_components/flag-icon-css/css/flag-icon.min.css')
     // endbower
     // endbuild
 
-    //link(rel='stylesheet', href='/bower_components/font-awesome/css/font-awesome.css')
-    link(rel='stylesheet', href='/bower_components/flag-icon-css/css/flag-icon.min.css')
-
-    // build:css styles/main.css
-    link(rel='stylesheet', href='/styles/main.css')
-    // endbuild
-
-    // build:js scripts/vendor/modernizr.js
-    script(src='/bower_components/modernizr/modernizr.js')
+    // build:css /xwingcodex/styles/main.css
+    link(rel='stylesheet', href='styles/main.css')
     // endbuild
   body
     <!--[if lt IE 10]>
@@ -45,21 +39,21 @@ html.no-js(lang='')
                 b.caret
               ul.dropdown-menu
                 li
-                  a(href="/${{layout.lang}}$/official/learntoplay.html") ${{ layout.learntoplay }}$
+                  a(href="/xwingcodex/${{layout.lang}}$/official/learntoplay.html") ${{ layout.learntoplay }}$
                 li
-                  a(href="/${{layout.lang}}$/official/rrg.html") ${{ layout.rrg }}$
+                  a(href="/xwingcodex/${{layout.lang}}$/official/rrg.html") ${{ layout.rrg }}$
                 li
-                  a(href="/${{layout.lang}}$/official/faq.html") ${{ layout.faq }}$
+                  a(href="/xwingcodex/${{layout.lang}}$/official/faq.html") ${{ layout.faq }}$
                 li
-                  a(href="/${{layout.lang}}$/official/regs.html") ${{ layout.regs }}$
+                  a(href="/xwingcodex/${{layout.lang}}$/official/regs.html") ${{ layout.regs }}$
                 li
-                  a(href="/${{layout.lang}}$/official/epic.html") ${{ layout.epic }}$
+                  a(href="/xwingcodex/${{layout.lang}}$/official/epic.html") ${{ layout.epic }}$
                 li
-                  a(href="/${{layout.lang}}$/official/other.html") ${{ layout.other }}$
+                  a(href="/xwingcodex/${{layout.lang}}$/official/other.html") ${{ layout.other }}$
                 li
-                  a(href="/${{layout.lang}}$/official/changes.html") ${{ layout.changes }}$
+                  a(href="/xwingcodex/${{layout.lang}}$/official/changes.html") ${{ layout.changes }}$
             li
-              a(href="/${{layout.lang}}$/unofficial/codex.html") ${{ layout.codex }}$
+              a(href="/xwingcodex/${{layout.lang}}$/unofficial/codex.html") ${{ layout.codex }}$
             li.dropdown
               a(href='#', data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false").dropdown-toggle
                 span(class="${{ layout.flag }}$")
@@ -68,12 +62,12 @@ html.no-js(lang='')
                 b.caret
               ul.dropdown-menu
                 li
-                  a(href="/en/index.html")
+                  a(href="/xwingcodex/en/index.html")
                     span.flag-icon.flag-icon-us
                     nbsp
                     | ${{ layout.english }}$
                 li
-                  a(href="/de/index.html")
+                  a(href="/xwingcodex/de/index.html")
                     span.flag-icon.flag-icon-de
                     nbsp
                     | ${{ layout.german }}$
@@ -92,28 +86,28 @@ html.no-js(lang='')
       r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
       ga('create','UA-96988873-1');ga('send','pageview');
 
-    // build:js scripts/vendor.js
+    // build:js /xwingcodex/scripts/vendor.js
     // bower:js
-    script(src='/bower_components/jquery/dist/jquery.js')
-    script(src='/bower_components/modernizr/modernizr.js')
+    script(src='bower_components/jquery/dist/jquery.js')
+    script(src='bower_components/modernizr/modernizr.js')
     // endbower
     // endbuild
 
-    // build:js scripts/plugins.js
-    script(src='/bower_components/bootstrap-stylus/js/affix.js')
-    script(src='/bower_components/bootstrap-stylus/js/alert.js')
-    script(src='/bower_components/bootstrap-stylus/js/dropdown.js')
-    script(src='/bower_components/bootstrap-stylus/js/tooltip.js')
-    script(src='/bower_components/bootstrap-stylus/js/modal.js')
-    script(src='/bower_components/bootstrap-stylus/js/transition.js')
-    script(src='/bower_components/bootstrap-stylus/js/button.js')
-    script(src='/bower_components/bootstrap-stylus/js/popover.js')
-    script(src='/bower_components/bootstrap-stylus/js/carousel.js')
-    script(src='/bower_components/bootstrap-stylus/js/scrollspy.js')
-    script(src='/bower_components/bootstrap-stylus/js/collapse.js')
-    script(src='/bower_components/bootstrap-stylus/js/tab.js')
+    // build:js /xwingcodex/scripts/bootstrap-stylus.js
+    script(src='bower_components/bootstrap-stylus/js/affix.js')
+    script(src='bower_components/bootstrap-stylus/js/alert.js')
+    script(src='bower_components/bootstrap-stylus/js/dropdown.js')
+    script(src='bower_components/bootstrap-stylus/js/tooltip.js')
+    script(src='bower_components/bootstrap-stylus/js/modal.js')
+    script(src='bower_components/bootstrap-stylus/js/transition.js')
+    script(src='bower_components/bootstrap-stylus/js/button.js')
+    script(src='bower_components/bootstrap-stylus/js/popover.js')
+    script(src='bower_components/bootstrap-stylus/js/carousel.js')
+    script(src='bower_components/bootstrap-stylus/js/scrollspy.js')
+    script(src='bower_components/bootstrap-stylus/js/collapse.js')
+    script(src='bower_components/bootstrap-stylus/js/tab.js')
     // endbuild
 
-    // build:js scripts/main.js
-    script(src='/scripts/main.js')
+    // build:js /xwingcodex/scripts/main.js
+    script(src='app/scripts/main.js')
     // endbuild
