@@ -37,8 +37,14 @@ gulp.task('bundleJavaScript', function() {
 });
 
 gulp.task('bundleCSS', function() {
+    gulp.src('bower_components/flag-icon-css/flags/4x3/*.svg')
+      .pipe($.debug({title: 'Copying flag: ', showFiles: true}))
+      .pipe(gulp.dest('dist/styles/flags/4x3'));
+    gulp.src('bower_components/flag-icon-css/flags/1x1/*.svg')
+      .pipe($.debug({title: 'Copying flag: ', showFiles: true}))
+      .pipe(gulp.dest('dist/styles/flags/1x1'));
     return gulp.src('dist/xwingcodex/**/*.css')
-      .pipe($.debug({title: 'Bundling CSS:', showFiles: true}))
+      .pipe($.debug({title: 'Bundling CSS: ', showFiles: true}))
       .pipe($.rename(function (path) {
         path.dirname = 'styles'
       }))
