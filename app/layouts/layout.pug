@@ -8,9 +8,11 @@ html.no-js(lang='')
     link(rel='apple-touch-icon', href='apple-touch-icon.png')
     // Place favicon.ico in the root directory
 
-    // build:css /xwingcodex/styles/vendor/vendor.css
+    // external resource links, keep this to a minimum, only for cases where it is a pain to keep local
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/2.8.0/css/flag-icon.min.css')
+
+    // build:css /xwingcodex/styles/vendor.css
     // bower:css
-    link(rel='stylesheet', href='bower_components/flag-icon-css/css/flag-icon.min.css')
     // endbower
     // endbuild
 
@@ -56,19 +58,19 @@ html.no-js(lang='')
               a(href="/xwingcodex/${{layout.lang}}$/unofficial/codex.html") ${{ layout.codex }}$
             li.dropdown
               a(href='#', data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false").dropdown-toggle
-                span(class="${{ layout.flag }}$")
+                span(style="margin-right: 5px" class="${{ layout.flag }}$")
                 nbsp
                 | ${{ layout.language }}$
                 b.caret
               ul.dropdown-menu
                 li
                   a(href="/xwingcodex/en/index.html")
-                    span.flag-icon.flag-icon-us
+                    span(style="margin-right: 5px").flag-icon.flag-icon-us
                     nbsp
                     | ${{ layout.english }}$
                 li
                   a(href="/xwingcodex/de/index.html")
-                    span.flag-icon.flag-icon-de
+                    span(style="margin-right: 5px").flag-icon.flag-icon-de
                     nbsp
                     | ${{ layout.german }}$
 
@@ -86,14 +88,10 @@ html.no-js(lang='')
       r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
       ga('create','UA-96988873-1');ga('send','pageview');
 
-    // build:js /xwingcodex/scripts/vendor/vendor.js
+    // build:js /xwingcodex/scripts/vendor.js
     // bower:js
     script(src='bower_components/jquery/dist/jquery.js')
     script(src='bower_components/modernizr/modernizr.js')
-    // endbower
-    // endbuild
-
-    // build:js /xwingcodex/scripts/vendor/bootstrap-stylus.js
     script(src='bower_components/bootstrap-stylus/js/affix.js')
     script(src='bower_components/bootstrap-stylus/js/alert.js')
     script(src='bower_components/bootstrap-stylus/js/dropdown.js')

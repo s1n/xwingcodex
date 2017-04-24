@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var merge = require('merge-stream');
 const $ = require('gulp-load-plugins')();
 var browserSync = require('browser-sync').create();
 const del = require('del');
@@ -27,29 +28,27 @@ gulp.task('minify', () => {
 });
 
 gulp.task('bundleJavaScript', function() {
-    return gulp.src('dist/xwingcodex/**/*.js')
+    return gulp.src('dist/xwingcodex/scripts/**')
       .pipe($.debug({title: 'Bundling JS:', showFiles: true}))
-      .pipe($.rename(function (path) {
-        path.dirname = 'scripts'
-      }))
-      .pipe(gulp.dest('dist'));
-    //return del(['dist/xwingcodex/scripts'])
+      .pipe(gulp.dest('dist/scripts'));
+    //var rmdir = del(['dist/xwingcodex/scripts']);
+    //return merge(script, rmdir);
 });
 
+// we're not going to bundle flag-icon-css because
+// a) it references a relative path not in the same folder and is a PITA
+// b) it just works when used directly from cdnjs
 gulp.task('bundleCSS', function() {
-    gulp.src('bower_components/flag-icon-css/flags/4x3/*.svg')
+    var fourbythree = gulp.src('bower_components/flag-icon-css/flags/4x3/*.svg')
       .pipe($.debug({title: 'Copying flag: ', showFiles: true}))
       .pipe(gulp.dest('dist/styles/flags/4x3'));
-    gulp.src('bower_components/flag-icon-css/flags/1x1/*.svg')
+    var onebyone = gulp.src('bower_components/flag-icon-css/flags/1x1/*.svg')
       .pipe($.debug({title: 'Copying flag: ', showFiles: true}))
       .pipe(gulp.dest('dist/styles/flags/1x1'));
-    return gulp.src('dist/xwingcodex/**/*.css')
+    var othercss = gulp.src('dist/xwingcodex/styles/*.css')
       .pipe($.debug({title: 'Bundling CSS: ', showFiles: true}))
-      .pipe($.rename(function (path) {
-        path.dirname = 'styles'
-      }))
-      .pipe(gulp.dest('dist'));
-    //return del(['dist/xwingcodex/styles'])
+      .pipe(gulp.dest('dist/styles'));
+    return merge(fourbythree, onebyone, othercss);
 });
 
 gulp.task('bundlejs', function() {
@@ -68,7 +67,7 @@ gulp.task('bundlejs', function() {
 });
 
 gulp.task('stylus', function() {
-    gulp.src(['app/styles/*.styl'])
+    return gulp.src(['app/styles/*.styl'])
         .pipe($.plumber({
             handleError: function (err) {
                 console.log(err);
@@ -89,7 +88,7 @@ gulp.task('stylus', function() {
 });
 
 gulp.task('js', function() {
-    gulp.src(['app/scripts/*.js'])
+    return gulp.src(['app/scripts/*.js'])
         .pipe($.plumber({
             handleError: function (err) {
                 console.log(err);
@@ -107,7 +106,7 @@ gulp.task('js', function() {
 });
 
 gulp.task('pug', function() {
-    gulp.src(['app/*.pug', 'app/**/*.pug', '!app/layouts', '!app/layouts/*.pug'])
+    return gulp.src(['app/*.pug', 'app/**/*.pug', '!app/layouts', '!app/layouts/*.pug'])
 	    .pipe($.plumber())
         .pipe($.pug({pretty: true}))
         .pipe($.htmlI18n({
@@ -121,7 +120,7 @@ gulp.task('pug', function() {
 });
 
 gulp.task('image', function() {
-    gulp.src(['app/images/*'])
+    return gulp.src(['app/images/*'])
         .pipe($.plumber({
             handleError: function (err) {
                 console.log(err);
@@ -137,7 +136,6 @@ gulp.task('clean', del.bind(null, ['dist']));
 
 gulp.task('serve', () => {
     browserSync.init({
-        //server: "dist"
         notify: false,
         port: 9000,
         server: {
@@ -161,12 +159,12 @@ gulp.task('serve', () => {
 gulp.task('default', () => {
     return new Promise(resolve => {
         dev = false;
-        runSequence('clean', 'pug', 'image', 'js', 'stylus', 'minify', 'bundleCSS', 'bundleJavaScript', resolve);
+        runSequence('clean', 'pug', 'image', 'js', 'stylus', 'minify', 'bundleJavaScript', resolve);
     });
 });
 
 gulp.task('deploy', () => {
-  return gulp.src('dist/**/*')
+  return gulp.src('dist/**')
     .pipe($.debug({title: 'Deploying:', showFiles: true}))
     .pipe($.ghPages());
 });
