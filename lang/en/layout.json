@@ -1,18 +1,20 @@
 {
-    "brand": "X-Wing Codex",
-    "official": "Official Rules",
-    "changes": "Changes",
-    "epic": "Epic",
-    "faq": "FAQ",
-    "other": "Other",
-    "regs": "Regulations",
-    "rrg": "Rules Reference",
-    "learntoplay": "Learn To Play",
-    "codex": "Codex Rules",
-    "broughtby": "Brought to you by #[a(href=\"https://www.facebook.com/groups/AustinXwing/\") 512 Squadron]",
-    "language": "English",
-    "english": "English",
-    "german": "German",
-    "lang": "en",
-    "flag": "flag-icon flag-icon-us"
+    "layout": {
+        "brand": "X-Wing Codex",
+        "official": "Official Rules",
+        "changes": "Changes",
+        "epic": "Epic",
+        "faq": "FAQ",
+        "other": "Other",
+        "regs": "Regulations",
+        "rrg": "Rules Reference",
+        "learntoplay": "Learn To Play",
+        "codex": "Codex Rules",
+        "broughtby": "Brought to you by #[a(href=\"https://www.facebook.com/groups/AustinXwing/\") 512 Squadron]",
+        "language": "English",
+        "english": "English",
+        "german": "German",
+        "lang": "en",
+        "flag": "flag-icon flag-icon-us"
+    }
 }

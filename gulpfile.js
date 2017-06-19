@@ -1,72 +1,47 @@
 var gulp = require('gulp');
 var merge = require('merge-stream');
+var fs = require('fs');
 const $ = require('gulp-load-plugins')();
 var browserSync = require('browser-sync').create();
 const del = require('del');
 const runSequence = require('run-sequence');
 var reload = browserSync.reload;
 
-//if node version is lower than v.0.1.2
-require('es6-promise').polyfill();
-
 gulp.task('minify', () => {
-  return gulp.src(['dist/*.html', 'dist/**/*.html'])
-    .pipe($.useref({searchPath: ['dist', '.']}))
-    //.pipe($.if(/\.js$/, $.uglify({compress: {drop_console: true}})))
-    //.pipe($.if(/\.css$/, $.cssnano({safe: true, autoprefixer: false})))
+  return gulp.src(['dist/xwingcodex/*.html', 'dist/xwingcodex/**/*.html'])
+    .pipe($.if(/\.js$/, $.uglify({compress: {drop_console: true}})))
+    .pipe($.if(/\.css$/, $.cssnano({safe: true, autoprefixer: false})))
     .pipe($.if(/\.html$/, $.htmlmin({
       collapseWhitespace: true,
-    //  minifyCSS: true,
-    //  minifyJS: {compress: {drop_console: true}},
+      minifyCSS: true,
+      minifyJS: {compress: {drop_console: true}},
       processConditionalComments: true,
       removeComments: true,
       removeEmptyAttributes: true,
       removeScriptTypeAttributes: true,
       removeStyleLinkTypeAttributes: true
     })))
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('dist/xwingcodex'));
 });
 
-gulp.task('bundleJavaScript', function() {
-    return gulp.src('dist/xwingcodex/scripts/**')
-      .pipe($.debug({title: 'Bundling JS:', showFiles: true}))
-      .pipe(gulp.dest('dist/scripts'));
-    //var rmdir = del(['dist/xwingcodex/scripts']);
-    //return merge(script, rmdir);
-});
-
+//FIXME move to browserify
 // we're not going to bundle flag-icon-css because
 // a) it references a relative path not in the same folder and is a PITA
 // b) it just works when used directly from cdnjs
 gulp.task('bundleCSS', function() {
     var fourbythree = gulp.src('bower_components/flag-icon-css/flags/4x3/*.svg')
       .pipe($.debug({title: 'Copying flag: ', showFiles: true}))
-      .pipe(gulp.dest('dist/styles/flags/4x3'));
+      .pipe(gulp.dest('dist/xwingcodex/styles/flags/4x3'));
     var onebyone = gulp.src('bower_components/flag-icon-css/flags/1x1/*.svg')
       .pipe($.debug({title: 'Copying flag: ', showFiles: true}))
-      .pipe(gulp.dest('dist/styles/flags/1x1'));
+      .pipe(gulp.dest('dist/xwingcodex/styles/flags/1x1'));
     var othercss = gulp.src('dist/xwingcodex/styles/*.css')
       .pipe($.debug({title: 'Bundling CSS: ', showFiles: true}))
-      .pipe(gulp.dest('dist/styles'));
+      .pipe(gulp.dest('dist/xwingcodex/styles'));
     return merge(fourbythree, onebyone, othercss);
 });
 
-gulp.task('bundlejs', function() {
-    return gulp.src(["bower_components/bootstrap-stylus/js/**/*.js"])
-        .pipe($.plumber({
-            handleError: function (err) {
-                console.log(err);
-                this.emit('end');
-            }
-        }))
-        //.pipe($.uglify())
-        .pipe($.concat('bootstrap.js'))
-        .pipe($.browserify())
-        .pipe(gulp.dest('dist/scripts/vendor'))
-        .pipe(reload({stream: true}));
-});
-
-gulp.task('stylus', function() {
+gulp.task('assets:stylus', function() {
     return gulp.src(['app/styles/*.styl'])
         .pipe($.plumber({
             handleError: function (err) {
@@ -76,18 +51,18 @@ gulp.task('stylus', function() {
         }))
         .pipe($.sourcemaps.init())
         .pipe($.stylus({
-            paths: ['.', './bower_components/bootstrap-stylus']
+            paths: ['.', './node_modules/bootstrap-styl']
         }))
         .pipe($.autoprefixer())
         //.pipe($.csscomb())
         //.pipe($.mergeMediaQueries({log:true}))
-        //.pipe($.concat('main.css'))
+        .pipe($.concat('main.css'))
         .pipe($.sourcemaps.write())
-        .pipe(gulp.dest('dist/styles'))
+        .pipe(gulp.dest('dist/xwingcodex/styles'))
         .pipe(reload({stream:true}))
 });
 
-gulp.task('js', function() {
+gulp.task('assets:js', function() {
     return gulp.src(['app/scripts/*.js'])
         .pipe($.plumber({
             handleError: function (err) {
@@ -95,31 +70,92 @@ gulp.task('js', function() {
                 this.emit('end');
             }
         }))
+        //FIXME sourcemaps?
+        //.pipe(sourcemaps.init({loadMaps: true}))
         .pipe($.browserify())
-        .pipe(gulp.dest('dist/scripts'))
+        .pipe(gulp.dest('dist/xwingcodex/scripts'))
         .pipe($.rename({
             suffix: '.min'
         }))
         .pipe($.uglify())
-        .pipe(gulp.dest('dist/scripts'))
+        //.pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('dist/xwingcodex/scripts'))
         .pipe(reload({stream: true}));
+});
+
+var translate = function(index, filepattern, defaultLang, dest) {
+    var defaultLang = gulp.src(index)
+        .pipe($.international({
+            delimiter: {
+                prefix: '${',
+                suffix: '}'
+            },
+            encodeEntities: false,
+            filename: filepattern,
+            locales: './.tmp/locales',
+            whitelist: defaultLang
+        }))
+        .pipe(gulp.dest(dest));
+    var allLangs = gulp.src(index)
+        .pipe($.international({
+            delimiter: {
+                prefix: '${',
+                suffix: '}'
+            },
+            encodeEntities: false,
+            filename: '${lang}/' + filepattern,
+            locales: './.tmp/locales',
+        }))
+        .pipe(gulp.dest(dest));
+    return merge(defaultLang, allLangs);
+};
+
+gulp.task('translate:merge', function() {
+    var en = gulp.src('lang/en/*.json')
+        .pipe($.mergeJson({
+            fileName: "en.json"
+        }))
+        .pipe(gulp.dest('./.tmp/locales'));
+    var de = gulp.src('lang/de/*.json')
+        .pipe($.mergeJson({
+            fileName: "de.json"
+        }))
+        .pipe(gulp.dest('./.tmp/locales'));
+    return merge(en, de);
+});
+
+gulp.task('translate:layouts', function() {
+    return translate(['app/layouts/*.pug'], 'layouts/${name}.${ext}', 'en', './.tmp');
+});
+
+gulp.task('translate:official', function() {
+    return translate(['app/official/*.pug'], 'official/${name}.${ext}', 'en', './.tmp');
+});
+
+gulp.task('translate:unofficial', function() {
+    return translate(['app/unofficial/*.pug'], 'unofficial/${name}.${ext}', 'en', './.tmp');
+});
+
+gulp.task('translate:index', function() {
+    return translate(['app/*.pug'], '${name}.${ext}', 'en', './.tmp');
+});
+
+gulp.task('translate', () => {
+    return new Promise(resolve => {
+        dev = false;
+        runSequence('translate:merge', 'translate:layouts', 'translate:official', 'translate:unofficial', 'translate:index', resolve);
+    });
 });
 
 gulp.task('pug', function() {
-    return gulp.src(['app/*.pug', 'app/**/*.pug', '!app/layouts', '!app/layouts/*.pug'])
+    return gulp.src(['.tmp/*.pug', '.tmp/**/*.pug', '!.tmp/layout.pug', '!.tmp/**/layout.pug'])
 	    .pipe($.plumber())
         .pipe($.pug({pretty: true}))
-        .pipe($.htmlI18n({
-            createLangDirs: true,
-            langDir: './lang',
-            trace: true,
-            defaultLang: 'en'
-        }))
-        .pipe(gulp.dest('dist'))
+        .pipe(gulp.dest('dist/xwingcodex/'))
         .pipe(reload({stream: true}));
 });
 
-gulp.task('image', function() {
+gulp.task('assets:images', function() {
     return gulp.src(['app/images/*'])
         .pipe($.plumber({
             handleError: function (err) {
@@ -128,11 +164,11 @@ gulp.task('image', function() {
             }
         }))
         .pipe($.cache($.imagemin()))
-        .pipe(gulp.dest('dist/images'))
+        .pipe(gulp.dest('dist/xwingcodex/images'))
         .pipe(reload({stream: true}));
 });
 
-gulp.task('clean', del.bind(null, ['dist']));
+gulp.task('clean', del.bind(null, ['dist', '.tmp']));
 
 gulp.task('serve', () => {
     browserSync.init({
@@ -140,14 +176,8 @@ gulp.task('serve', () => {
         port: 9000,
         server: {
             baseDir: ["dist"],
-            routes: {
-                '/bower_components': 'bower_components'
-            }
-        },
-        serveStatic: [{
-            route: "/xwingcodex",
-            dir: 'dist'
-        }]
+            index: "xwingcodex/index.html"
+        }
     });
     gulp.watch('app/scripts/*.js',['js']);
     gulp.watch('app/styles/*.styl',['stylus']);
@@ -159,12 +189,12 @@ gulp.task('serve', () => {
 gulp.task('default', () => {
     return new Promise(resolve => {
         dev = false;
-        runSequence('clean', 'pug', 'image', 'js', 'stylus', 'minify', 'bundleJavaScript', resolve);
+        runSequence('clean', 'translate', 'pug', 'assets:images', 'assets:js', 'assets:stylus', resolve);
     });
 });
 
 gulp.task('deploy', () => {
-  return gulp.src('dist/**')
+  return gulp.src('dist/xwingcodex/**')
     .pipe($.debug({title: 'Deploying:', showFiles: true}))
     .pipe($.ghPages());
 });

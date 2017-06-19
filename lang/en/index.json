@@ -1,7 +1,9 @@
 {
-    "jumbotron": "X-Wing Codex",
-    "lead": "When you look at the codex, careful you must be, for the codex looks back.",
-    "w1": "Welcome to the X-Wing Codex!",
-    "w2": "Within this site, you will find all of the official rules as documented by Fantasy Flight Games, as well as other future rules related projects (such as an unofficial complete codex, a community, rules rewrite, and a card database).",
-    "w3": "Enjoy the stay!"
+    "index": {
+        "jumbotron": "X-Wing Codex",
+        "lead": "When you look at the codex, careful you must be, for the codex looks back.",
+        "w1": "Welcome to the X-Wing Codex!",
+        "w2": "Within this site, you will find all of the official rules as documented by Fantasy Flight Games, as well as other future rules related projects (such as an unofficial complete codex, a community, rules rewrite, and a card database).",
+        "w3": "Enjoy the stay!"
+    }
 }
